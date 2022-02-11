@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da forca</title>
+    <style>
+        .letra{
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            content: "teste";
+            text-align: center;
+            font-size: 2em;
+            font-variant: small-caps;
+        }
+        #jogador{
+            width: 20px;
+            font-size: 1em;
+        }
+        header{
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bolder;
+        }
+        main{
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        #letrasCorr{
+            color: purple;
+            margin-bottom: 20px;
+
+        }
+    </style>
+    <script>
+
+        /*
+            Jogo da forca, o jogo está com 2 bugs, ao apertar o numérico 0 e backspace
+        */
+        var palavras=[
+            "Boneco","Havaiana","Bairro","Padrasto","Banco","Odor","Muitos","Orquestra","Cupido","Faringe","Sempre","Carteira","Algemar","Locker","Marca","Sentença","Garantir","Montanhas","Inferno","Gigante","Estranho","Acordo","Presentes","Toalha","Privado","Pesado","Rebite","Ancinho","Polegar","Caribe","Colheita","Arma","Desatar","Recreio","Milho","Ruim","Prefeito","Procurar","Dardo","Atriz","Egito","Fumado","Perfumaria","Desenvolver","Palhaço","Madeira","Sobre","Clara","Serpente","Vocal","Bigode","Punho","Arrasto","Minhoca","Rodeio","Submarino","Interceptar","Centelha","Mensagem","Personalidade","Dipstick","Primordial","Mergulhador","Cometa","Dizer","Hipnotizar","Senhor","Cientista","Conde","Esgrima","Gatinho","Cinco","Purificador","Acreditar","Amor","Transpirar","Fonte","Mil","Tomo","Sardinha","Ninja","Lenha","Trem","Funil","Estaca","Polvo","Reclinar","Pino","Segurança","Roseta","Luto","Pobreza","Inimigo","Flor","Cena","Tempo", "Erasmo Gostoso", "Metralhadora", "anticonstitucionalismo", "Coberta"
+        ]
+        var maxPalavras = palavras.length
+        var maxCaracteres;
+        var escolhaJog;
+        var stickman;
+        var randPala;
+        var palaEscolhida;
+        var tecla;
+        var compara;
+        var divAcerto;
+        var posAcerto;
+        var palaTrocada;
+        var letCor
+        var letRep
+        var errosJogador
+        var acertosJogador
+        var divJogo
+        var letDigitadas
+       
+       
+       function iniciar() {
+           randPala = Math.floor(Math.random()*maxPalavras)
+           palaEscolhida = palavras[randPala].toUpperCase()
+           escolhaJog = document.getElementById("jogador")
+           divAcerto = document.getElementById("letrasCorr")
+           stickman = document.getElementById("boneco")
+           divJogo = document.getElementById("jogo")
+           letDigitadas = document.getElementById("letras_digitadas")
+           stickman.innerHTML=""
+           maxCaracteres=palaEscolhida.length
+           errosJogador=0
+           acertosJogador=0
+           for(var i=0;i<maxCaracteres;i++){
+               divAcerto.innerHTML+= '<input type="text" id="letra'+i+'" class="letra" disabled maxlength="1">'
+            }
+        }
+        
+        function game() {
+            tecla = escolhaJog.value.toUpperCase()
+            console.log(tecla)
+            compara = palaEscolhida.match(tecla)
+            letDigitadas.innerHTML+=tecla+" "
+            if(compara==null){
+                errosJogador=errosJogador+1                
+                stickman.innerHTML='<img src="imgs/c'+errosJogador+'.png">'
+            }
+            while(compara!=null){
+                posAcerto = palaEscolhida.indexOf(tecla)
+                divAcerto = document.querySelector("#letra"+posAcerto).value=tecla
+                palaEscolhida = palaEscolhida.replace(tecla, '#')
+                compara = palaEscolhida.match(tecla)
+                acertosJogador++
+            }
+            if(acertosJogador==maxCaracteres){
+                stickman.innerHTML='<img src="imgs/win.gif">'
+                divJogo.innerHTML=`<p style="color: purple; font-size: 2em; font-weight: bold;">Venceu</p>`
+                divJogo.innerHTML+='<button autofocus onclick="location.reload()">Reiniciar</button><br>'
+            }
+            if(errosJogador==7){
+                divJogo.innerHTML='<p style="color: red; font-size: 2em; font-weight: bold;">Perdeu</p>'
+                divJogo.innerHTML+='<button autofocus onclick="location.reload()">Reiniciar</button>'
+            }
+        }
+        
+        window.addEventListener("load", iniciar)
+
+    </script>
+</head>
+<body>
+    <header><h1>Jogo da forca</h1></header>
+    <main>
+        <div id="letrasCorr"></div>
+        <div id="jogo">
+            <label for="jogador">Escolha uma letra:</label>
+            <input type="text" id="jogador" autofocus onkeyup="game()" maxlength="1" onkeypress="this.value=''">
+            <div id="letras_digitadas">Letras digitadas: </div>
+
+        </div>
+        
+        <div id="boneco"></div>
+    </main>
+</body>
+</html>
